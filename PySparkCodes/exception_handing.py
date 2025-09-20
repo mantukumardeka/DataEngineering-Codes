@@ -28,3 +28,24 @@ except Exception as e:
 finally:
     print("ℹ️ Job finished (with or without errors).")
     spark.stop()
+
+
+
+
+# print(" What this does:")
+#
+# Outer Try Block:
+# Handles file read errors (e.g., file not found, schema mismatch).
+#
+# Inner Try Block:
+# Handles transformation errors (e.g., column not found, invalid operations).
+#
+# Specific Exception Handling:
+#
+# AnalysisException → Spark-specific errors (like missing table, wrong path).
+#
+# Generic Exception → Catches all other Python errors.
+#
+# Finally Block:
+# Ensures resources (like spark.stop()) are cleaned up.
+
