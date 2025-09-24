@@ -38,3 +38,4 @@ df1.show()
 
 
 df1.write.jdbc(url=jdbc_url, table="orders_filtered", mode="overwrite", properties=properties)
+
