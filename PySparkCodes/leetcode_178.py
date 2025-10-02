@@ -58,3 +58,14 @@ ranksdf=scrore_df.withColumn("rank",dense_rank().over(windowspace))
 
 ranksdf.show()
 
+
+print("Using SQL")
+
+scrore_df.createOrReplaceTempView("table_score")
+
+spark.sql("select * from table_score ").show()
+
+
+## Here you can use as rank but in SQL you cant do that , you need to run as "rank"
+
+spark.sql("""select score ,dense_rank() over(order by score desc) as rank from table_score""").show()
