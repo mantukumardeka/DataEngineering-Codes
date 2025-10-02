@@ -58,6 +58,15 @@ secondhighest=rankdf.filter(functions.col("rank")==2).select("salary")
 secondhighest.show()
 
 
+print("Using SQl")
+
+employee_df.createOrReplaceTempView("employee")
+
+spark.sql("select * from employee ")
+
+
+
+
 
 
 
