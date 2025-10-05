@@ -8,5 +8,8 @@
 5. [leetcode_179](https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/PySparkCodes/leetcode_179.py)
 6. [leetcode_180](https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/PySparkCodes/leetcode_180.py)
 7. [leetcode_181](https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/PySparkCodes/leetcode_181.py)
-8. [leetcode]()
+8. [leetcode](https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/PySparkCodes/leetcode_182.py)
+9. [leetcode](https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/PySparkCodes/leetcode_183.py)
+10. [leetcode](https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/PySparkCodes/leetcode_184.py)
+11. 
 8. 
