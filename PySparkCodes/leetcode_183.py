@@ -60,6 +60,10 @@ new_df=customer_df.join(order_df,customer_df.id==order_df.customerid,"left")\
 new_df.show()
 
 
+print(" =========Here you will Get more about Logical and Physical Plan=========")
+new_df.explain(True)
+
+
 print("USING SQL")
 
 customer_df.createOrReplaceTempView("customer")
