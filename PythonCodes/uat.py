@@ -19,5 +19,9 @@ mycursor=connection.cursor()
 
 mycursor.execute("select * from customer ")
 
-for x in mycursor:
-    print(x)
+# for x in mycursor:
+#     print(x)
+
+result=mycursor.fetchall()
+
+logger.info(f"Here is the output: {result}")
