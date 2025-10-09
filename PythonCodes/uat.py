@@ -25,3 +25,14 @@ mycursor.execute("select * from customer ")
 result=mycursor.fetchall()
 
 logger.info(f"Here is the output: {result}")
+
+
+## Inserting values in table:
+
+mycursor.execute("insert into customer (customer_id,customer_name) values (13,'Dipalim')")
+
+## You have to run commit to reflect the data in the mysql
+connection.commit()
+
+connection.close()
+mycursor.close()
