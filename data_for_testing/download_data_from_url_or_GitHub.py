@@ -1,8 +1,10 @@
 import requests
 from pyspark.sql import SparkSession
 
-url = "https://raw.githubusercontent.com/databricks/LearningSparkV2/master/databricks-datasets/learning-spark-v2/sf-fire/sf-fire-calls.csv"
-local_path = "/Users/mantukumardeka/Desktop/DataEngineering/data_for_testing/sf-fire-calls.csv"
+#url = "https://raw.githubusercontent.com/databricks/LearningSparkV2/master/databricks-datasets/learning-spark-v2/sf-fire/sf-fire-calls.csv"
+
+url="https://github.com/mantukumardeka/DataEngineering-Codes/blob/main/data_for_testing/sf-fire-calls.csv"
+local_path = "/Users/mantukumardeka/Desktop/DataEngineering/data_for_testing/delete_sf-fire-calls.csv"
 
 r = requests.get(url)
 open(local_path, "wb").write(r.content)
