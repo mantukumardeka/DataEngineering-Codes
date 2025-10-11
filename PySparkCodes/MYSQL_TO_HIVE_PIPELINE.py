@@ -2,13 +2,30 @@ from pyspark.sql import SparkSession
 
 # ------------------------------
 # Step 1: Create Spark Session with Hive support
-# ------------------------------
+# # ------------------------------
+# spark = SparkSession.builder \
+#     .appName("MySQL_to_Hive") \
+#     .config("spark.jars", "/Users/mantukumardeka/Desktop/DataEngineering/jars/mysql-connector-j-9.4.0/mysql-connector-j-9.4.0.jar") \
+#     .config("spark.sql.warehouse.dir", "/user/hive/warehouse") \
+#     .enableHiveSupport() \
+#     .getOrCreate()
+
+# BEST JDBC CONNECTION you have to use:
+# MySQL JDBC driver
+mysql_jar = "/opt/homebrew/Cellar/hive/4.1.0/libexec/lib/mysql-connector-j-9.4.0.jar"
+
+# Spark session with Hive support and JDBC driver
 spark = SparkSession.builder \
     .appName("MySQL_to_Hive") \
-    .config("spark.jars", "/Users/mantukumardeka/Desktop/DataEngineering/jars/mysql-connector-j-9.4.0/mysql-connector-j-9.4.0.jar") \
     .config("spark.sql.warehouse.dir", "/user/hive/warehouse") \
+    .config("spark.jars", mysql_jar) \
+    .config("spark.driver.extraClassPath", mysql_jar) \
+    .config("spark.executor.extraClassPath", mysql_jar) \
     .enableHiveSupport() \
     .getOrCreate()
+
+spark.sparkContext.setLogLevel("ERROR")
+
 
 # ------------------------------
 # Step 2: MySQL connection properties
@@ -39,7 +56,7 @@ df.show()
 # Step 5: Write to Hive
 # ------------------------------
 hive_db = "mkd_hive"
-hive_table = "customer_filtered"
+hive_table = "customer_filtered_1"
 
 # Create Hive database if not exists
 spark.sql(f"CREATE DATABASE IF NOT EXISTS {hive_db}")
