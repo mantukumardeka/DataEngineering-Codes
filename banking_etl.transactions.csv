@@ -1,0 +1,31 @@
+transaction_id,customer_id,amount,transaction_type,transaction_date,status,branch
+1,25,285.32,Withdrawal,2025-03-18,Pending,Lake Debbie Branch
+2,16,381.48,Withdrawal,2025-08-13,Completed,North Laurieburgh Branch
+3,17,310.43,Deposit,2025-05-09,Completed,Mariahview Branch
+4,25,732.33,Withdrawal,2025-05-25,Pending,Lake Jeremiah Branch
+5,21,358.49,Withdrawal,2025-07-10,Completed,Parkborough Branch
+6,1,442.0,Withdrawal,2025-06-23,Completed,Pruittmouth Branch
+7,17,130.01,Deposit,2025-07-01,Pending,Lake Reneeview Branch
+8,24,771.23,Deposit,2024-12-17,Completed,North Dwayneborough Branch
+9,7,382.17,Deposit,2024-11-01,Completed,Bryanton Branch
+10,19,146.38,Withdrawal,2025-01-18,Completed,Teresaborough Branch
+11,15,486.55,Withdrawal,2025-08-03,Pending,Sarahbury Branch
+12,8,391.68,Deposit,2025-08-23,Pending,Trevorchester Branch
+13,5,246.73,Withdrawal,2025-06-06,Pending,Wrightside Branch
+14,25,750.97,Deposit,2025-07-26,Pending,East Wandaport Branch
+15,18,803.91,Withdrawal,2025-09-14,Completed,Lake Lisaport Branch
+16,17,143.67,Deposit,2025-05-15,Pending,Mirandaview Branch
+17,30,919.27,Deposit,2024-12-16,Completed,Elizabethbury Branch
+18,3,475.23,Withdrawal,2025-06-08,Completed,Grossview Branch
+19,11,879.09,Deposit,2025-05-07,Completed,South Brandonville Branch
+20,12,753.92,Withdrawal,2024-12-19,Pending,North Andreastad Branch
+21,17,289.09,Deposit,2025-08-04,Pending,South John Branch
+22,28,770.43,Withdrawal,2025-08-15,Completed,Riveratown Branch
+23,19,891.99,Withdrawal,2025-06-09,Completed,Ruizberg Branch
+24,30,372.07,Withdrawal,2024-12-27,Completed,Cynthiashire Branch
+25,1,926.84,Deposit,2025-04-05,Completed,South Amanda Branch
+26,12,213.72,Withdrawal,2025-03-15,Completed,Lake Jenniferton Branch
+27,6,290.98,Deposit,2025-06-29,Completed,Michaelstad Branch
+28,8,919.01,Withdrawal,2025-09-13,Completed,Keithville Branch
+29,10,616.33,Deposit,2024-11-01,Pending,Whitefort Branch
+30,6,351.78,Deposit,2025-07-06,Pending,Danielsview Branch

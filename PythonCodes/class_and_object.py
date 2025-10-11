@@ -16,3 +16,5 @@ emp2.give_raise(10000) # Bob's new salary: 70000
 
 
 ## OBJECT: class ko call karke jaha rakhte hai vo object hai
+## class ko bhi call karna huta hai,
+## selft means object , khud ko pass kya ha
