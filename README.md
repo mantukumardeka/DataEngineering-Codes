@@ -55,3 +55,4 @@ Delivery table:
 - The customer **id=4** has a first order with delivery_id=7 → **immediate**.  
 
 Hence, **half** of the customers have immediate first orders.  
+# InterviewQuestions
