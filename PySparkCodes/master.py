@@ -41,8 +41,12 @@ columns = ["EMPID","FNAME","LNAME","DEPARTMENT","SALARY","DOJ","GENDER"]
 # Create DataFrame
 df = spark.createDataFrame(data, columns)
 
-# Remove duplicate EMPID rows
-df = df.dropDuplicates(["EMPID"])
 
-df.show()
 
+from pyspark.sql import functions as F
+
+df.filter(F.col("salary") > 60000).select("empid","department").show()
+
+
+
+df.filter()
