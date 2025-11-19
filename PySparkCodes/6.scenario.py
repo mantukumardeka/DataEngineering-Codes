@@ -15,3 +15,8 @@ columns = ["empid", "name", "salary"]
 
 df = spark.createDataFrame(data, columns)
 df.show()
+
+
+from pyspark.sql.functions import *
+
+df.withColumn("Designation", expr("case when salary>=10000 then 'Manager'  else 'Employee' end " )).show()
