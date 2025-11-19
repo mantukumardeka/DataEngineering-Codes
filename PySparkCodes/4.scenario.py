@@ -16,3 +16,9 @@ columns = ["custid", "custname", "address"]
 df = spark.createDataFrame(data, columns)
 
 df.show()
+
+from pyspark.sql.functions import *
+
+
+df.groupBy("custid","custname").agg(collect_set("address")).show()
+
