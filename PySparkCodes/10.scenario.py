@@ -15,3 +15,15 @@ df = spark.createDataFrame(
 )
 
 df.show()
+
+
+#df.groupby("empid").agg(max("monthlastdate").alias("maxsale")).show()
+
+maxdatedf = df.groupBy(col("empid").alias("empid")).agg(max("monthlastdate").alias("maxdate"))
+maxdatedf.show()
+
+
+joindf = df.join(maxdatedf, (df["empid"] == maxdatedf["empid"]) & (df["monthlastdate"] == maxdatedf["maxdate"]),
+                 "inner").drop("empid", "maxdate")
+
+joindf.show()
