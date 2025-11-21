@@ -19,38 +19,28 @@ spark.sparkContext.setLogLevel("ERROR")
 # ############## ● ● ● ● ● ●  -> DONT TOUCH ABOVE====================
 
 
-print("Here we go")
+from pyspark import SparkConf, SparkContext
+from pyspark.sql import SparkSession
+from pyspark.sql.types import *
+from pyspark.sql.functions import *
+from pyspark.sql.window import *
 
-Data = [
-(1, "Alice", "Johnson", "HR", 50000, "2021-05-10", "Female"),
-(2, "Bob", "Smith", "IT", 75000, "2020-08-15", "Male"),
-(3, "Charlie", "Brown", "Finance", 60000, "2019-03-20", "Male"),
-(4, "Diana", "Prince", "IT", 85000, "2021-01-10", "Female"),
-(5, "Eva", "Green", "Marketing", 45000, "2022-07-05", "Female"),
-(6, "Frank", "Adams", "Finance", 70000, "2020-12-11", "Male"),
-(7, "Grace", "Kelly", "HR", 52000, "2018-09-25", "Female"),
-(8, "Hank", "Miller", "IT", 90000, "2023-04-01", "Male"),
-(9, "Ivy", "Harper", "Finance", 58000, "2022-06-20", "Female"),
-(10, "Jack", "Daniels", "HR", 48000, "2021-11-15", "Male"),
-(11, "Kate", "Winslet", "Marketing", 53000, "2020-03-10","Female"),
-(12, "Liam", "Neeson", "Finance", 75000, "2023-01-20", "Male"),
-(13, "Mia", "Wallace", "HR", 55000, "2019-12-30", "Female"),
-(14, "Nathan", "Drake", "IT", 82000, "2018-02-14", "Male"),
-(15, "Olivia", "Newton", "Marketing", 46000, "2022-09-18",
-"Female"),
-(2, "Bob", "Smith", "IT", 75000, "2020-08-15", "Male"),
-(7, "Grace", "Kelly", "HR", 52000, "2018-09-25", "Female")]
+conf = SparkConf().setMaster("local[*]").setAppName("Scenerio12")
+sc = SparkContext(conf=conf)
+sc.setLogLevel("ERROR")
+spark = SparkSession.builder.getOrCreate()
+
+#creating UDF functions for masked data, here email[0] is it will take first letter i.e 0th index and email[8:] is it will take the string from 8th index position to end of the string
+def mask_email(email):
+    return (email[0] + "**********" + email[8:])
+
+#creating UDF functions for masked data, here mobile[0:2] is it will take string from Index 0 to 2 letters and mobile[-3:] is it will take string last three index to end the end of the string
+def mask_mobile(mobile):
+    return (mobile[0:2] + "*****" + mobile[-3:])
 
 
-schema=["EMPID","FNAME","LNAME","DEPARTMENT","SALARY","DOJ","GENDER"]
-
-df=spark.createDataFrame(data=Data, schema=schema)
-
+df = spark.createDataFrame([("Renuka1992@gmail.com", "9856765434"), ("anbu.arasu@gmail.com", "9844567788")], ["email", "mobile"])
 df.show()
 
-
-#df.select("*").show()
-#df.select("empid","fname").distinct().show()
-#df.filter("fname=='Bob'").show()
-
-
+maskeddf = df.withColumn("email",udf(mask_email)(df.email)).withColumn("mobile",udf(mask_mobile)(df.mobile))
+maskeddf.show()
