@@ -73,3 +73,25 @@ casedf = joindf.withColumn("comment",expr("""
                                             """))
 
 casedf.show()
+
+#
+#
+
+
+# select
+#   id,
+#   case when name != name1 then 'Mismatch' when name1 is null then 'New in Source' when name is null then 'New in Target' end as comment
+# from
+#   (
+#     select
+#       coalesce(id, id1) as id,
+#       s.name,
+#       t.name1
+#     from
+#       sourcetab s full
+#       outer join targettab t on s.id = t.id1
+#     WHERE
+#       s.name != t.name1
+#       OR s.name IS NULL
+#       OR t.name1 IS NULL
+#   );
