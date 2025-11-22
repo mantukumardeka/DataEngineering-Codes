@@ -43,3 +43,20 @@ secondjoindf.show()
 
 finaldf = secondjoindf.withColumnRenamed("parent1", "grandparent").drop("child1")
 finaldf.show()
+
+
+print("CHATGPT WAY")
+
+
+# Self Join: parent of child = child of another row
+df_gp = (
+    df.alias("c")
+      .join(df.alias("p"), col("c.parent") == col("p.child"))
+      .select(
+          col("c.child").alias("child"),
+          col("c.parent").alias("parent"),
+          col("p.parent").alias("grandparent")
+      )
+)
+
+df_gp.show()
