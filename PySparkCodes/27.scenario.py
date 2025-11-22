@@ -54,8 +54,8 @@ df1 = df.withColumn("diff", lag("salary", 1).over(wn))
 
 df2 = df1.withColumn(
     "increment",
-    col("salary") - coalesce(col("diff"), lit(0))
-).drop(col("diff"))
+    (col("salary") - col("diff"))
+).drop(col("diff")).na.fill(0)
 
 df2.show()
 
