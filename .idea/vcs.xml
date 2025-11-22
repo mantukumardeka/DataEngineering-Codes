@@ -7,6 +7,7 @@
     <mapping directory="$PROJECT_DIR$/banking_etl" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/books" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/citicaldata" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/databricks" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sql" vcs="Git" />
   </component>
 </project>
