@@ -1,42 +1,40 @@
-import requests
 from pyspark.sql import SparkSession
 
-# Correct RAW JSON URL
-url = "https://raw.githubusercontent.com/mohankrishna02/interview-scenerios-spark-sql/master/Datasets/scen.json"
+spark=SparkSession.builder.appName("MM").getOrCreate()
 
-local_path = "/Users/mantukumardeka/Desktop/DataEngineering/data_for_testing/complex2.json"
+source_rdd = spark.sparkContext.parallelize([
+    (1, "A"),
+    (2, "B"),
+    (3, "C"),
+    (4, "D")
+],1)
 
-print("Downloading JSON...")
-r = requests.get(url)
+target_rdd = spark.sparkContext.parallelize([
+    (1, "A"),
+    (2, "B"),
+    (4, "X"),
+    (5, "F")
+],2)
 
-# Save JSON file
-with open(local_path, "wb") as f:
-    f.write(r.content)
+# Convert RDDs to DataFrames using toDF()
+df1 = source_rdd.toDF(["id", "name"])
+df2 = target_rdd.toDF(["id", "name1"])
 
-print("Download complete.")
+# Show the DataFrames
+df1.show()
+df2.show()
 
-# Start Spark
-spark = SparkSession.builder.appName("ScenarioData").getOrCreate()
 
-# Read JSON
-df = df = spark.read.format("json").option("multiline", "true").load(f"file://{local_path}")
-
-print("Schema:")
-
+joindf  = df1.join(df2, ["id"] , "full")
+joindf.show()
 
 from pyspark.sql.functions import *
-print("Data:")
-df.show(5, truncate=False)
-df.printSchema()
-finaldf = df.withColumn("multiMedia", explode(col("multiMedia"))).withColumn("dislikes",
-                                                                             expr("likeDislike.dislikes")).withColumn(
-    "likes", expr("likeDislike.likes")).withColumn("userAction", expr("likeDislike.userAction")).withColumn("createAt",
-                                                                                                            expr(
-                                                                                                                "multiMedia.createAt")).withColumn(
-    "description", expr("multiMedia.description")).withColumn("id", expr("multiMedia.id")).withColumn("likeCount", expr(
-    "multiMedia.likeCount")).withColumn("mediatype", expr("multiMedia.mediatype")).withColumn("name", expr(
-    "multiMedia.name")).withColumn("place", expr("multiMedia.place")).withColumn("url", expr("multiMedia.url")).drop(
-    "likeDislike", "multiMedia")
-print("flat Schema")
-finaldf.printSchema()
-finaldf.show()
+
+casedf = joindf.withColumn("comment",expr("""
+                                           case
+                                           when name=name1 then 'match'
+                                           else 'mismatch'
+                                           end
+                                            """))
+
+casedf.show()
