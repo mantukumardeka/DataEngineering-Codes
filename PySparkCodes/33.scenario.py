@@ -66,3 +66,10 @@ result = tour_count_df.agg(
 )
 
 result.show()
+
+print("USING SQL")
+
+familydf.createTempView("tab33_1")
+countrydf.createTempView("tab33_2")
+
+spark.sql("select  max(total_number_country ) from (select a.name , count(*) as total_number_country from tab33_1 a join tab33_2  b on a.family_size between b.min_size and b.max_size group by a.name) a").show()
