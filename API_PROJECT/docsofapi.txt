@@ -1,0 +1,471 @@
+# FASTAPI + MYSQL + PYSPARK API INTEGRATION GUIDE
+
+## Objective
+
+Create REST APIs using FastAPI on top of a MySQL database and consume those APIs using Python/PySpark.
+
+Supported Operations:
+
+* GET    → Read Data
+* POST   → Insert Data
+* PUT    → Update Data
+* DELETE → Delete Data
+
+---
+
+# Source Database
+
+```sql
+USE mkd;
+
+SELECT * FROM employee;
+```
+
+```text
++--------+--------+--------+-------+
+| emp_id | name   | salary | loc   |
++--------+--------+--------+-------+
+| 1      | manish | 20000  | india |
+| 2      | hari   | 5000   | UK    |
+| 3      | rahul  | 10000  | india |
+| 4      | nil    | 20000  | india |
+| 5      | sil    | 24000  | UK    |
+| 6      | neha   | 17000  | UK    |
++--------+--------+--------+-------+
+```
+
+---
+
+# Environment Setup (Mac/Linux)
+
+## Create Virtual Environment
+
+```bash
+python3 -m venv api_project-venv
+source api_project-venv/bin/activate
+```
+
+## Install Required Packages
+
+```bash
+pip install fastapi uvicorn pymysql requests pyspark
+```
+
+---
+
+# FASTAPI SERVER STARTUP
+
+For every API application, start FastAPI using:
+
+```bash
+uvicorn <python_file_name>:app --reload
+```
+
+Example:
+
+```bash
+uvicorn app_get:app --reload
+```
+
+Swagger UI:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+====================================================
+GET METHOD (READ DATA)
+======================
+
+## File: app_get.py
+
+```python
+from fastapi import FastAPI
+import pymysql
+
+app = FastAPI()
+
+@app.get("/employees")
+def get_employee():
+
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="Hadoop@123",
+        database="mkd"
+    )
+
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT emp_id,
+               name,
+               salary,
+               loc
+        FROM employee
+    """)
+
+    rows = cur.fetchall()
+
+    data = []
+
+    for row in rows:
+        data.append({
+            "emp_id": row[0],
+            "name": row[1],
+            "salary": float(row[2]),
+            "loc": row[3]
+        })
+
+    conn.close()
+
+    return data
+```
+
+### Start API
+
+```bash
+uvicorn app_get:app --reload
+```
+
+### Test API
+
+```text
+http://localhost:8000/employees
+```
+
+---
+
+## Consume API using PySpark
+
+### File: call_get_api.py
+
+```python
+import requests
+from pyspark.sql import SparkSession
+
+response = requests.get(
+    "http://localhost:8000/employees"
+)
+
+data = response.json()
+
+spark = SparkSession.builder \
+    .appName("API_READ") \
+    .getOrCreate()
+
+df = spark.createDataFrame(data)
+
+df.select(
+    "emp_id",
+    "name",
+    "salary",
+    "loc"
+).show()
+```
+
+---
+
+====================================================
+POST METHOD (INSERT DATA)
+=========================
+
+## Requirement
+
+Insert New Employee
+
+```text
+7 | mantu  | 9000  | india
+8 | dipali | 3000  | UK
+```
+
+---
+
+## File: app_post.py
+
+```python
+from fastapi import FastAPI
+import pymysql
+
+app = FastAPI()
+
+@app.post("/employee")
+def add_employee(emp: dict):
+
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="Hadoop@123",
+        database="mkd"
+    )
+
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO employee
+        (
+            emp_id,
+            name,
+            salary,
+            loc
+        )
+        VALUES
+        (
+            %s,
+            %s,
+            %s,
+            %s
+        )
+    """,
+    (
+        emp["emp_id"],
+        emp["name"],
+        emp["salary"],
+        emp["loc"]
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "message": "Employee Inserted Successfully"
+    }
+```
+
+### Start API
+
+```bash
+uvicorn app_post:app --reload
+```
+
+---
+
+## Call POST API
+
+### File: call_insert_api.py
+
+```python
+import requests
+
+payload = {
+    "emp_id": 7,
+    "name": "dipali",
+    "salary": 30000,
+    "loc": "India"
+}
+
+response = requests.post(
+    "http://localhost:8000/employee",
+    json=payload
+)
+
+print(response.json())
+```
+
+---
+
+====================================================
+PUT METHOD (UPDATE DATA)
+========================
+
+## Requirement
+
+Update Employee
+
+Before:
+
+```text
+7 | dipali | 30000 | India
+```
+
+After:
+
+```text
+7 | dipali | 35000 | USA
+```
+
+---
+
+## File: app_put.py
+
+```python
+from fastapi import FastAPI
+import pymysql
+
+app = FastAPI()
+
+@app.put("/employee/{emp_id}")
+def update_employee(emp_id: int, emp: dict):
+
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="Hadoop@123",
+        database="mkd"
+    )
+
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE employee
+        SET
+            name=%s,
+            salary=%s,
+            loc=%s
+        WHERE emp_id=%s
+    """,
+    (
+        emp["name"],
+        emp["salary"],
+        emp["loc"],
+        emp_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "message": "Employee Updated Successfully"
+    }
+```
+
+### Start API
+
+```bash
+uvicorn app_put:app --reload
+```
+
+---
+
+## Call PUT API
+
+### File: call_put_api.py
+
+```python
+import requests
+
+payload = {
+    "name": "dipali",
+    "salary": 35000,
+    "loc": "USA"
+}
+
+response = requests.put(
+    "http://localhost:8000/employee/7",
+    json=payload
+)
+
+print(response.json())
+```
+
+---
+
+====================================================
+DELETE METHOD (DELETE DATA)
+===========================
+
+## Requirement
+
+Delete Employee:
+
+```text
+7 | dipali | 35000 | USA
+```
+
+---
+
+## File: app_delete.py
+
+```python
+from fastapi import FastAPI
+import pymysql
+
+app = FastAPI()
+
+@app.delete("/employee/{emp_id}")
+def delete_employee(emp_id: int):
+
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="Hadoop@123",
+        database="mkd"
+    )
+
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM employee WHERE emp_id = %s",
+        (emp_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "message": "Employee Deleted Successfully"
+    }
+```
+
+### Start API
+
+```bash
+uvicorn app_delete:app --reload
+```
+
+---
+
+## Call DELETE API
+
+### File: call_delete_api.py
+
+```python
+import requests
+
+response = requests.delete(
+    "http://localhost:8000/employee/7"
+)
+
+print(response.json())
+```
+
+---
+
+# REST API Mapping
+
+| HTTP Method | Database Operation |
+| ----------- | ------------------ |
+| GET         | SELECT             |
+| POST        | INSERT             |
+| PUT         | UPDATE             |
+| DELETE      | DELETE             |
+
+---
+
+# Data Engineering Use Cases
+
+GET
+
+* Extract data from source systems
+* Read customer/order/product data
+* API-based ingestion into Spark
+
+POST
+
+* Insert records into operational systems
+* Trigger downstream jobs
+
+PUT
+
+* Update records
+* Update processing status
+
+DELETE
+
+* Remove unwanted records
+* Cleanup test data
+
+---
+
